@@ -37,6 +37,10 @@ git clone https://github.com/ThomasBespokeSensors/raspberrypibird
 
 ## Create the Python virtual environment
 
+```
+cd ~/github/raspberrypibird
+```
+
 Create the virtual environment called .venv 
 ```
 python3 -m venv .venv
