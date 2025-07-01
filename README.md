@@ -1,12 +1,63 @@
 # raspberrypibird
 Recording and analysing bird noises via microphone and raspberry pi
 
-```sudo apt-get install portaudio19-dev python3-pyaudio``` # pyaudio helps sounddevice
+## Install on the Raspberry Pi
 
-clone the git repository
+- portaudio19-dev 
+- python3-pyaudio
 
-create the venv ```python3 -m venv .venv```
+This is not run in a docker because of potential issues accessing the USB mic through the docker container
 
-activate the venv ```source .venv/bin/activate```
+```sudo apt-get install portaudio19-dev python3-pyaudio```
 
-install the requirements.txt ```pip install -r requirements.txt```
+## Install github
+
+```
+cd ~
+mkdir github
+cd github
+```
+
+```
+sudo apt update
+sudo apt install git
+```
+
+Configure git
+
+```
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+
+Clone the repository
+```
+git clone https://github.com/ThomasBespokeSensors/raspberrypibird
+```
+
+## Create the Python virtual environment
+
+Create the virtual environment called .venv 
+```
+python3 -m venv .venv
+```
+
+Activate the virtual environment
+```
+source .venv/bin/activate
+```
+
+Install the requirements
+```
+pip install -r requirements.txt
+```
+
+## Run the app
+Activate the virtual environment (if not already activitate)
+```
+source .venv/bin/activate
+```
+Run the app
+```
+python3 app.py
+```
