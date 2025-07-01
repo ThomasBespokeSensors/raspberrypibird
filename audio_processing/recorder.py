@@ -94,8 +94,9 @@ def audio_callback(indata, frames, time_info, status):
             recording_buffer.clear()
             recording_buffer.append(indata.copy()) # Add the current block to start the recording
 
+
 # --- Main Program Execution ---
-def run_recorder(): # Renamed from main() to run_recorder() for clarity when imported
+def run_recorder():
     global recorded_audio_data, program_running
 
     print("--- Voice Activated Recorder ---")
@@ -103,9 +104,6 @@ def run_recorder(): # Renamed from main() to run_recorder() for clarity when imp
     print(f"Max recording duration: {MAX_RECORDING_DURATION} seconds")
     print(f"Stop after {SILENCE_DURATION_TO_STOP} seconds of silence")
 
-    # Ensure the recordings directory exists
-    if not os.path.exists(RECORDINGS_DIR):
-        os.makedirs(RECORDINGS_DIR)
     print(f"Saving files to: {os.path.abspath(RECORDINGS_DIR)}")
 
     # Find and set the device if a specific index is provided
@@ -126,35 +124,34 @@ def run_recorder(): # Renamed from main() to run_recorder() for clarity when imp
                             blocksize=BLOCKSIZE,
                             device=DEVICE_INDEX):
             print("\nProgram started. Press Ctrl+C to stop.") # Updated message
+
             # Main loop to keep the program running and handle file saving
             while program_running:
-                # Wait for the save_recording_flag to be set by the callback
-                # Timeout ensures the loop doesn't block indefinitely
-                if save_recording_flag.wait(timeout=0.1): # Wait for 100ms
+                
+                # Wait for the save_recording_flag to be set by the callback, when the save_recording_flag is set it executes this if statement and saves the file. The timeout ensures the loop doesn't block indefinitely
+                if save_recording_flag.wait(timeout=0.1):
                     if recorded_audio_data is not None:
+
                         # Construct filename with timestamp
                         timestamp = time.strftime("%Y%m%d-%H%M%S")
                         filename = f"recording_{timestamp}.wav"
-                        filepath = os.path.join(RECORDINGS_DIR, filename) # Save to the recordings directory
+                        filepath = os.path.join(RECORDINGS_DIR, filename)
 
                         try:
-                            # Ensure the data type is appropriate for WAV saving (e.g., int16 or float32)
-                            # Convert to int16 for common WAV compatibility
                             # Scale float data from -1 to 1 to int16 range -32768 to 32767
-                            if recorded_audio_data.dtype == np.float32:
-                                audio_to_save = (recorded_audio_data * 32767).astype(np.int16)
-                            else:
-                                audio_to_save = recorded_audio_data.astype(np.int16) # Ensure it's int16
+                            audio_to_save = (recorded_audio_data * 32767).astype(np.int16)
 
                             # Save the WAV file
                             wavfile.write(filepath, SAMPLERATE, audio_to_save)
                             print(f"Saved recording: {filename}")
                         except Exception as e:
                             print(f"Error saving audio file {filename}: {e}")
+                        
+                        # Clear everything ready for the next audio recording
                         finally:
-                            recorded_audio_data = None # Clear data after saving attempt
-                            recording_buffer.clear() # Clear buffer for next recording
-                            save_recording_flag.clear() # Reset the event flag
+                            recorded_audio_data = None
+                            recording_buffer.clear()
+                            save_recording_flag.clear()
 
     except KeyboardInterrupt:
         print("\nStopping program via KeyboardInterrupt.")
